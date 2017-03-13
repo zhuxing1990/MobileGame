@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background_blue"
     android:orientation="vertical">
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="65dp"
-        android:layout_marginRight="100dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="16dp">
+        android:layout_marginRight="65dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:id="@+id/main_title_layout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:text="@string/gamecenter"
             android:textColor="@color/color_text1_white"
-            android:textSize="20sp" />
+            android:textSize="30sp" />
 
         <ImageView
             android:id="@+id/main_newwork_status"
@@ -42,7 +42,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/main_content_layout"
+        android:layout_below="@+id/main_title_layout">
 
         <ImageView
             android:id="@+id/main_go_right"
@@ -50,32 +52,25 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:padding="34dp"
+            android:padding="15dp"
             android:src="@drawable/go_right" />
-
-        <HorizontalScrollView
-            android:id="@+id/main_horizontalScrollView"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/main_go_left"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"
+            android:padding="15dp"
+            android:src="@drawable/go_left" />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_viewpager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="65dp"
-            android:layout_marginRight="100dp"
-            android:paddingTop="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <GridView
-                    android:id="@+id/main_gridView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:verticalSpacing="9dp"
-                    android:horizontalSpacing="9dp"
-                    android:gravity="center"
-                    android:numColumns="5">
-                </GridView>
-            </LinearLayout>
-        </HorizontalScrollView>
+            android:layout_marginRight="65dp">
+        </android.support.v4.view.ViewPager>
     </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

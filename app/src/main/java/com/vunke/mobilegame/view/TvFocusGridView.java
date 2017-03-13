@@ -2,16 +2,14 @@ package com.vunke.mobilegame.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
+import com.vunke.mobilegame.R;
 import com.vunke.mobilegame.utils.DensityUtil;
 
 /**
@@ -77,20 +75,20 @@ public class TvFocusGridView extends GridView {
         bringChildToFront(v);
         if (isFocused() && v != null) {
             scaleCurrentView();
-            if (v instanceof LinearLayout) {
-                LinearLayout rl = (LinearLayout) v;
-                ImageView tmepView = (ImageView) rl.getChildAt(0);
-                TextView tv = (TextView) rl.getChildAt(1);
-                tv.setTextColor(Color.WHITE);
+            if (v instanceof RelativeLayout) {
+                RelativeLayout rl = (RelativeLayout) v;
+//                ImageView tmepView = (ImageView) rl.getChildAt(0);
+//                TextView tv = (TextView) rl.getChildAt(1);
+//                tv.setTextColor(Color.WHITE);
+                v.setBackgroundResource(R.color.color_background_blue2);
                 Rect r = mTmpSelectedRect;
-                tmepView.getGlobalVisibleRect(r);//Rect(62, 152 - 398, 512) 计算出imageview在屏幕的坐标点
+                v.getGlobalVisibleRect(r);//Rect(62, 152 - 398, 512) 计算出imageview在屏幕的坐标点
                 getGlobalVisibleRect(mTmpGridViewRect);//计算出屏幕的坐标点 Rect(45, 141 - 1875, 1035)
-
                 r.offset(-mTmpGridViewRect.left, -mTmpGridViewRect.top);//向左移动--mTmpGridViewRect.left就是向右滑动-mTmpGridViewRect.left
-                r.top -= mMySelectedPaddingRect.top + DensityUtil.dip2px(getContext(), 6);
-                r.left -= mMySelectedPaddingRect.left + DensityUtil.dip2px(getContext(), 6);
-                r.right += mMySelectedPaddingRect.right + DensityUtil.dip2px(getContext(), 6);
-                r.bottom += mMySelectedPaddingRect.bottom + DensityUtil.dip2px(getContext(), 6);
+                r.top -= mMySelectedPaddingRect.top + DensityUtil.dip2px(getContext(), 1);
+                r.left -= mMySelectedPaddingRect.left + DensityUtil.dip2px(getContext(),1);
+                r.right += mMySelectedPaddingRect.right + DensityUtil.dip2px(getContext(), 1);
+                r.bottom += mMySelectedPaddingRect.bottom + DensityUtil.dip2px(getContext(), 1);
                 mMySelectedDrawable.setBounds(r);
                 mMySelectedDrawable.draw(canvas);
             }
@@ -117,10 +115,11 @@ public class TvFocusGridView extends GridView {
      */
     void unScalePrevView() {
         if (mMySelectedView != null) {
-            if (mMySelectedView instanceof LinearLayout) {
-                LinearLayout rl = (LinearLayout) mMySelectedView;
-                TextView tv = (TextView) rl.getChildAt(1);
-                tv.setTextColor(Color.WHITE);
+            if (mMySelectedView instanceof RelativeLayout) {
+                RelativeLayout rl = (RelativeLayout) mMySelectedView;
+                rl.setBackgroundResource(R.color.color_background_blue3);
+//                TextView tv = (TextView) rl.getChildAt(1);
+//                tv.setTextColor(Color.WHITE);
             }
             mMySelectedView.setScaleX(1);
             mMySelectedView.setScaleY(1);

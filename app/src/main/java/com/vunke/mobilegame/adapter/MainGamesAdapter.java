@@ -1,48 +1,72 @@
 package com.vunke.mobilegame.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.vunke.mobilegame.R;
 import com.vunke.mobilegame.model.GameInfo;
-import com.vunke.mobilegame.utils.PicassoUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zhuxi on 2017/3/9.
  */
-public class MainGamesAdapter extends DefaultAdapter<GameInfo>{
+public class MainGamesAdapter extends BaseAdapter {
     private Context context;
-    private List<GameInfo> list;
-    public MainGamesAdapter(Context context,List<GameInfo> list) {
-        super(list);
+    private List<GameInfo> mlist;
+    public static final int CountSize = 18;
+    private LayoutInflater inflater;
+    public MainGamesAdapter(Context context, List<GameInfo> list, int page) {
         this.context = context;
-        this.list= list;
+        inflater = LayoutInflater.from(context);
+        mlist = new ArrayList<>();
+        int i = CountSize *page;//当前页的其实位置
+        int iEnd = i+ CountSize;
+        while ((i<list.size()) && (i<iEnd)) {
+            mlist.add(list.get(i));
+            i++;
+        }
+    }
+    public int getCount() {
+
+        return mlist.size();
     }
 
-    @Override
-    protected BaseHolder getHolder() {
-        return new GamesHolder();
+    public Object getItem(int position) {
+
+        return mlist.get(position);
     }
-    public class GamesHolder extends BaseHolder<GameInfo>{
+
+    public long getItemId(int position) {
+
+        return position;
+    }
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        MyViewHolder viewHolder;
+        if (convertView == null) {
+//            convertView = View.inflate(context, R.layout.gridview_games_item,null);
+            convertView = inflater.inflate(R.layout.gridview_games_item,parent,false);
+            viewHolder = new MyViewHolder();
+            viewHolder.gridview_games_text = (TextView) convertView.findViewById(R.id.gridview_games_text);
+            viewHolder.gridview_games_img = (ImageView) convertView.findViewById(R.id.gridview_games_img);
+//            viewHolder.gridview_games_layout = (RelativeLayout) convertView.findViewById(R.id.gridview_games_layout);
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder=(MyViewHolder)convertView.getTag();
+        }
+        viewHolder. gridview_games_text.setText(mlist.get(position).getGame_name());
+//        PicassoUtil.getInstantiation().onCompressBigImage(context,mlist.get(position).getGame_Icon(), viewHolder.gridview_games_img);
+        return convertView;
+    }
+    public class MyViewHolder{
         private TextView gridview_games_text;
         private ImageView gridview_games_img;
-        @Override
-        protected View initView() {
-            View view = View.inflate(context, R.layout.gridview_games_item,null);
-            gridview_games_text = (TextView) view.findViewById(R.id.gridview_games_text);
-            gridview_games_img = (ImageView) view.findViewById(R.id.gridview_games_img);
-            return view;
-        }
-
-        @Override
-        protected void refreshView(GameInfo data, final int position, final ViewGroup parent) {
-            gridview_games_text.setText(data.getGame_name());
-            PicassoUtil.getInstantiation().onBigNetImage(context,data.getGame_Icon(),gridview_games_img);
-        }
+//        private RelativeLayout gridview_games_layout;
     }
 }

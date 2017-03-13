@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class GridViewPagerAdapter extends PagerAdapter{
 	private List<GridView> array;
+	private Context context;
 	/**
 	 * 供外部调用（new）的方法
 	 * @param context  上下文
@@ -22,6 +23,7 @@ public class GridViewPagerAdapter extends PagerAdapter{
 	 */
 	public GridViewPagerAdapter(Context context, List<GridView> array) {
 		this.array=array;
+		this.context = context;
 	}
 	@Override
 	public int getCount() {
