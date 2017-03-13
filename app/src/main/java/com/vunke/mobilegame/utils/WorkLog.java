@@ -5,6 +5,9 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 日志工具类
+ */
 public class WorkLog {
 	public static final String projectName = "mobilegame";
 	public static void e(String className, String content) {
