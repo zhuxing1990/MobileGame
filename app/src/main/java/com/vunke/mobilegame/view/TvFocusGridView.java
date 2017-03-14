@@ -1,5 +1,6 @@
 package com.vunke.mobilegame.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -15,6 +16,7 @@ import com.vunke.mobilegame.utils.DensityUtil;
 /**
  * Created by zhuxi on 2017/3/11.
  */
+@SuppressLint("NewApi")
 public class TvFocusGridView extends GridView {
     float mMyScaleX = 1.0f;
     float mMyScaleY = 1.0f;
@@ -54,9 +56,11 @@ public class TvFocusGridView extends GridView {
     /**
      *  设置焦点框的图片
      *  @param resId
+     * @targetapi
      */
+
     public void setMySelector(int resId) {
-        mMySelectedDrawable = getResources().getDrawable(resId);
+        mMySelectedDrawable = getResources().getDrawable(resId,null);
         mMySelectedPaddingRect = new Rect();
         mMySelectedDrawable.getPadding(mMySelectedPaddingRect);//获取drawable所画区域的内边框
     }
