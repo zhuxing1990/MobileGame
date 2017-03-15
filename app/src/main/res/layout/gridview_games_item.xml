@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="170dp"
-    android:layout_height="192dp"
+    android:layout_height="175dp"
     android:id="@+id/gridview_games_layout"
     android:background="@color/color_background_blue3">
     <ImageView
@@ -13,10 +13,11 @@
         android:src="@drawable/temp_duzhuo"/>
     <TextView
         android:id="@+id/gridview_games_text"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/gridview_games_img"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:layout_marginBottom="15dp"
         android:textColor="@color/color_text1_white"
         android:maxLines="1"
