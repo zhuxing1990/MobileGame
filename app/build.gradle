@@ -81,19 +81,19 @@ ext {// 重要   涉及到你 的基础安装包的位置 然后才能生成补�
     tinkerEnabled = true
     //for normal build
     //old apk file to build patch apk
-    tinkerOldApkPath = "${bakPath}/app-debug-0308-16-19-04.apk"//生成基础Apk安装包路径
+    tinkerOldApkPath = "${bakPath}/app-release-0314-11-25-56.apk"//生成基础Apk安装包路径
     //proguard mapping file to build patch apk   app-release-0117-13-52-00-mapping.txt
     tinkerApplyMappingPath = "${bakPath}/"
     //resource R.txt to build patch apk, must input if there is resource changed
-    tinkerApplyResourcePath = "${bakPath}/app-debug-0308-16-19-04-R.txt"//生成基础APK的R文件
+    tinkerApplyResourcePath = "${bakPath}/app-release-0314-11-25-56-R.txt"//生成基础APK的R文件
     //only use for build all flavor, if not, just ignore this field
-    tinkerBuildFlavorDirectory = "${bakPath}/app-1018-17-32-47"// 这个是干什么不知道 直接复制
+    tinkerBuildFlavorDirectory = "${bakPath}/"// 渠道打包
 }
 
 def gitSha() {//直接复制   String gitRev 自己写 Git的版本   不知道Git的 请百度
     try {
-        // String gitRev = 'git rev-parse --short HEAD'.execute(null, project.rootDir).text.trim()
-        String gitRev = "1008611"
+        //String gitRev = 'git rev-parse --short HEAD'.execute(null, project.rootDir).text.trim()
+        String gitRev = "ac18c13"
         if (gitRev == null) {
             throw new GradleException("can't get git rev, you should add git to system path or just input test value, such as 'testTinkerId'")
         }

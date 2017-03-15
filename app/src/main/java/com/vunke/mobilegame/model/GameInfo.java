@@ -1,5 +1,7 @@
 package com.vunke.mobilegame.model;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by zhuxi on 2017/3/9.
  */
@@ -10,15 +12,24 @@ public class GameInfo {
     private long used_time;
     private long click;
     private String game_name;
-    private String game_Icon;
+    private Drawable game_Icon;
     private String game_desc;
     private String game_package;
     private String game_activity;
     private String version_code;
     private long update_time;
+    private boolean isSystemApp;
     private Object Other1;
     private Object Other2;
     private Object Other3;
+
+    public boolean isSystemApp() {
+        return isSystemApp;
+    }
+
+    public void setSystemApp(boolean systemApp) {
+        isSystemApp = systemApp;
+    }
 
     public int get_id() {
         return _id;
@@ -60,11 +71,11 @@ public class GameInfo {
         this.game_desc = game_desc;
     }
 
-    public String getGame_Icon() {
+    public Drawable getGame_Icon() {
         return game_Icon;
     }
 
-    public void setGame_Icon(String game_Icon) {
+    public void setGame_Icon(Drawable game_Icon) {
         this.game_Icon = game_Icon;
     }
 
@@ -140,6 +151,25 @@ public class GameInfo {
         this.version_code = version_code;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "GameInfo{" +
+                "_id=" + _id +
+                ", order=" + order +
+                ", create_time=" + create_time +
+                ", used_time=" + used_time +
+                ", click=" + click +
+                ", game_name='" + game_name + '\'' +
+                ", game_Icon=" + game_Icon +
+                ", game_desc='" + game_desc + '\'' +
+                ", game_package='" + game_package + '\'' +
+                ", game_activity='" + game_activity + '\'' +
+                ", version_code='" + version_code + '\'' +
+                ", update_time=" + update_time +
+                ", isSystemApp=" + isSystemApp +
+                ", Other1=" + Other1 +
+                ", Other2=" + Other2 +
+                ", Other3=" + Other3 +
+                '}';
+    }
 }

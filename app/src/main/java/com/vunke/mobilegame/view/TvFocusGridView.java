@@ -60,7 +60,7 @@ public class TvFocusGridView extends GridView {
      */
 
     public void setMySelector(int resId) {
-        mMySelectedDrawable = getResources().getDrawable(resId,null);
+        mMySelectedDrawable = getResources().getDrawable(resId);
         mMySelectedPaddingRect = new Rect();
         mMySelectedDrawable.getPadding(mMySelectedPaddingRect);//获取drawable所画区域的内边框
     }
