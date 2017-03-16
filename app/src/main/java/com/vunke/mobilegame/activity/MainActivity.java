@@ -73,10 +73,7 @@ public class MainActivity extends BaseActivity {
      * 设配器  用于设配ViewPager
      */
     private GridViewPagerAdapter gridview_adapter;
-    /**
-     * 模拟的数据
-     */
-    private int dataSize = 150; //数据总数
+
     /**
      * 总页数 记录viewPager的页数
      */
@@ -113,11 +110,14 @@ public class MainActivity extends BaseActivity {
                 .subscribe(new Observer<List<GameInfo>>() {
                     @Override
                     public void onCompleted() {
-
+                        List<GameInfo> gameInfos = AppsManage.qureyGameInfo(getApplicationContext());
+                        WorkLog.d(TAG, "onCompleted: "+ gameInfos.toString());
+                        setViewPager(gameInfos);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         subscribe.unsubscribe();
                     }
 
@@ -125,30 +125,13 @@ public class MainActivity extends BaseActivity {
                     public void onNext(List<GameInfo> gameInfos) {
                         if (gameInfos != null && !gameInfos.isEmpty()) {
                             WorkLog.d(TAG, "onNext: " + "gameInfos:" + gameInfos.size());
-                            setViewPager(gameInfos);
+                            AppsManage.InsertGameInfo(getApplicationContext(),gameInfos);
                         } else {
                             WorkLog.d(TAG, "onNext:  " + "gameInfos is Empty");
                         }
                     }
                 });
 
-//        infolist = new ArrayList<>();
-//        for (int i = 0; i <dataSize ; i++) {
-//            info = new GameInfo();
-//            info.set_id(1);
-//            info.setClick(0);
-//            info.setOrder(1111);
-//            info.setCreate_time(System.currentTimeMillis());
-//            info.setGame_desc("ceshi");
-////            info.setGame_Icon("http://www.bbvdd.com/d/20170309155547ljp.png");
-//            info.setGame_name("测试"+i);
-//            info.setUsed_time(System.currentTimeMillis());
-//            info.setUpdate_time(System.currentTimeMillis());
-//            info.setGame_package("com.vunke.test");
-//            info.setVersion_code("1");
-//            info.setGame_activity("com.vunke.test.TestActivity");
-//            infolist.add(info);
-//        }
     }
 
     private void setViewPager(final List<GameInfo> gameInfos) {

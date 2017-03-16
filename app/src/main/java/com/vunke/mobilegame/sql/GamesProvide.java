@@ -12,11 +12,11 @@ import android.support.annotation.Nullable;
  * Created by zhuxi on 2017/3/9.
  */
 public class GamesProvide extends ContentProvider{
-    private final static String AUTHORITH = "com.vunke.mobilegame.games";
+    private final static String AUTHORITH = "com.vunke.mobilegame.provider.gameinfo";
     private final static String PATH = "/game_info";
     private final static String PATHS = "/game_info/#";
 
-    private final static String TABLE_NAME = GamesSQLite.DATABASE_NAME;
+    private String TABLE_NAME = "moblie_game";
     private final static UriMatcher mUriMatcher = new UriMatcher(
             UriMatcher.NO_MATCH);
     private static final int CODE_DIR = 1;
@@ -74,12 +74,35 @@ public class GamesProvide extends ContentProvider{
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        if (values!=null) {
+            db = dbHelper.getWritableDatabase();
+            db.insert(TABLE_NAME, null, values);
+        }
+        return uri;
     }
-
+    @Nullable
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        int numValues = 0;
+        db.beginTransaction(); //开始事务
+        try {
+            //数据库操作
+            numValues = values.length;
+            for (int i = 0; i < numValues; i++) {
+                insert(uri, values[i]);
+            }
+            db.setTransactionSuccessful(); //别忘了这句 Commit
+        } finally {
+            db.endTransaction(); //结束事务
+        }
+        return numValues;
+    }
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int num = 0;
+        db = dbHelper.getWritableDatabase();
+        num = db.delete(TABLE_NAME,selection,selectionArgs);
+        return num;
     }
 
     @Override

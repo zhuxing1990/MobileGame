@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vunke.mobilegame">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"></uses-permission>
     <application
         android:name=".base.ThinkerApplication"
         android:allowBackup="true"
@@ -19,12 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".activity.GuideActivity" />
+        <!--Tinker service-->
         <service
             android:name=".service.ThinkerService"
             android:exported="false" />
 
-        <activity android:name=".activity.GuideActivity" />
+        <provider
+            android:authorities="com.vunke.mobilegame.provider.gameinfo"
+            android:name="com.vunke.mobilegame.sql.GamesProvide"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>

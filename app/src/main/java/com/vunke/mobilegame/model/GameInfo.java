@@ -16,7 +16,8 @@ public class GameInfo {
     private String game_desc;
     private String game_package;
     private String game_activity;
-    private String version_code;
+    private int version_code;
+    private String version_name;
     private long update_time;
     private boolean isSystemApp;
     private Object Other1;
@@ -143,12 +144,20 @@ public class GameInfo {
         this.used_time = used_time;
     }
 
-    public String getVersion_code() {
+    public int getVersion_code() {
         return version_code;
     }
 
-    public void setVersion_code(String version_code) {
+    public void setVersion_code(int version_code) {
         this.version_code = version_code;
+    }
+
+    public String getVersion_name() {
+        return version_name;
+    }
+
+    public void setVersion_name(String version_name) {
+        this.version_name = version_name;
     }
 
     @Override
@@ -165,6 +174,7 @@ public class GameInfo {
                 ", game_package='" + game_package + '\'' +
                 ", game_activity='" + game_activity + '\'' +
                 ", version_code='" + version_code + '\'' +
+                ", version_name='" + version_name + '\'' +
                 ", update_time=" + update_time +
                 ", isSystemApp=" + isSystemApp +
                 ", Other1=" + Other1 +
