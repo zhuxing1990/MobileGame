@@ -14,10 +14,13 @@
         android:id="@+id/main_title_layout">
 
         <TextView
+            android:id="@+id/main_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="@string/gamecenter"
+            android:text="@string/settings"
+            android:focusable="true"
+            android:layout_alignParentRight="true"
             android:textColor="@color/color_text1_white"
             android:textSize="30sp" />
 
@@ -28,15 +31,16 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/main_textclock"
             android:paddingRight="10dp"
+            android:visibility="gone"
             android:src="@drawable/wifi" />
 
         <TextClock
             android:id="@+id/main_textclock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/color_text1_white"
+            android:visibility="gone"
             android:textSize="20sp" />
     </RelativeLayout>
 

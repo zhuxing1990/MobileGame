@@ -1,5 +1,6 @@
 package com.vunke.mobilegame.manage;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -25,8 +26,11 @@ import java.util.List;
  * Created by zhuxi on 2017/3/15.
  */
 public class AppsManage {
+    public static final int UPDATE_DATA = 0x10001;
+    public static final int ADDED_APK = 0x10002;
+    public static final int REMOVED_APK = 0x10003;
     private static final String TAG = "AppsManage";
-
+    private static  Uri uri = Uri.parse("content://com.vunke.mobilegame.provider.gameinfo/game_info");
     /**
      * 获取所有应用信息
      *
@@ -55,23 +59,24 @@ public class AppsManage {
             gameInfo.setGame_name(localResolveInfo.activityInfo.loadLabel(manager).toString());
             gameInfo.setGame_package(localResolveInfo.activityInfo.packageName);
             gameInfo.setGame_activity(localResolveInfo.activityInfo.name);
-
 //            String publicSourceDir = localResolveInfo.activityInfo.applicationInfo.publicSourceDir;
 
             String pkgName = localResolveInfo.activityInfo.packageName;
             PackageInfo packagInfo;
             try {
                 packagInfo = context.getPackageManager().getPackageInfo(pkgName, 0);
-                gameInfo.setSystemApp(isSystemApp(packagInfo));
                 gameInfo.setVersion_code(packagInfo.versionCode);
                 gameInfo.setVersion_name(packagInfo.versionName);
                 gameInfo.setCreate_time(packagInfo.firstInstallTime);
                 gameInfo.setUpdate_time(packagInfo.lastUpdateTime);
+                gameInfo.setSystemApp(isSystemApp(packagInfo.applicationInfo));
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            gameInfoArrayList.add(gameInfo);
             WorkLog.d(TAG, "getAllAppList: " + "gameInfo:" + gameInfo.toString());
-            String appPackage = gameInfo.getGame_package();
+//            String appPackage = gameInfo.getGame_package();
+
 //            if (!appPackage.equals("com.vunke.apptvstore") && !appPackage.equals("com.kxy.tl") && !appPackage.equals("com.vunken.tv_sharehome")) {
 //                WorkLog.d(TAG, "getAllAppList: "+"not's vunke App");
 //                if (!gameInfo.isSystemApp()){
@@ -81,9 +86,6 @@ public class AppsManage {
 //            }else{
 //                WorkLog.d(TAG, "getAllAppList: "+"is vunke App");
 //            }
-            if (!appPackage.equals("com.vunke.mobilegame")) {
-                gameInfoArrayList.add(gameInfo);
-            }
         }
         return gameInfoArrayList;
     }
@@ -91,13 +93,20 @@ public class AppsManage {
     /**
      * 是否为系统应用
      *
-     * @param pInfo
+     * @param
      * @return
      */
-    public static boolean isSystemApp(PackageInfo pInfo) {
-        return ((pInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+    public static boolean isSystemApp(ApplicationInfo info) {
+        if ((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+            WorkLog.i(TAG, "systemApp is true1");
+            return true;
+        } else if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {// 判断是不是系统应用
+            WorkLog.i(TAG, "systemApp is true2");
+            return true;
+        }
+        WorkLog.i(TAG, "systemApp is false");
+        return false;
     }
-
     /**
      * 根据包名启动APK
      *
@@ -134,7 +143,7 @@ public class AppsManage {
     public static long InsertGameInfo(Context context, List<GameInfo> list) {
         long l = -1;
         WorkLog.d(TAG, "InsertGameInfo: start insert");
-        Uri uri = Uri.parse("content://com.vunke.mobilegame.provider.gameinfo/game_info");
+//        Uri uri = Uri.parse("content://com.vunke.mobilegame.provider.gameinfo/game_info");
         ContentResolver contentResolver = context.getContentResolver();
         contentResolver.delete(uri,null,null);
 //        ArrayList<ContentProviderOperation> ops;
@@ -151,7 +160,8 @@ public class AppsManage {
                 values.put("version_code", gameInfo.getVersion_code());
                 values.put("update_time", gameInfo.getUpdate_time());
                 values.put("version_name", gameInfo.getVersion_name());
-                WorkLog.d(TAG, "InsertGameInfo: " +"values"+values.toString());
+                values.put("is_systemapp", gameInfo.isSystemApp());
+                WorkLog.i(TAG, "InsertGameInfo: " +"values"+values.toString());
                 contentResolver.insert(uri, values);
             }
         } catch (Exception e) {
@@ -175,8 +185,8 @@ public class AppsManage {
     }
 
     public static List<GameInfo> qureyGameInfo(Context context){
-        WorkLog.d(TAG, "InsertGameInfo: start qurey");
-        Uri uri = Uri.parse("content://com.vunke.mobilegame.provider.gameinfo/game_info");
+        WorkLog.d(TAG, "qureyGameInfo: start qurey");
+//        Uri uri = Uri.parse("content://com.vunke.mobilegame.provider.gameinfo/game_info");
         Cursor cursor = context.getContentResolver().query(uri,null,null,null,null);
         List<GameInfo> list = new ArrayList<>();
         GameInfo gameInfo;
@@ -193,8 +203,19 @@ public class AppsManage {
                 gameInfo.setUpdate_time(cursor.getLong(cursor.getColumnIndex("update_time")));
                 gameInfo.setVersion_name(cursor.getString(cursor.getColumnIndex("version_name")));
                 gameInfo.setGame_desc(cursor.getString(cursor.getColumnIndex("game_desc")));
-                WorkLog.d(TAG, "qureyGameInfo: "+"game_info"+gameInfo.toString());
-                list.add(gameInfo);
+                String isSystemApp = cursor.getString(cursor.getColumnIndex("is_systemapp"));
+                if (isSystemApp.equals("0")){
+                    gameInfo.setSystemApp(false);
+                }else  if (isSystemApp.equals("1")){
+                    gameInfo.setSystemApp(true);
+                }
+                WorkLog.i(TAG, "qureyGameInfo: "+"game_info"+gameInfo.toString());
+                if (gameInfo.getGame_package().equals("com.tencent.tmgp.sgame")){
+                    list.add(gameInfo);
+                }else
+                if (gameInfo.isSystemApp()){
+                    list.add(gameInfo);
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -203,5 +224,22 @@ public class AppsManage {
         }
         return list;
     }
-
+   public static  String getTopActivity(Context context){
+        ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE) ;
+       ActivityManager.RunningTaskInfo info = manager.getRunningTasks(1).get(0);
+//       String shortClassName = info.topActivity.getShortClassName(); //类名
+//       String className = info.topActivity.getClassName(); //完整类名
+       String packageName = info.topActivity.getPackageName(); //包名
+//        List<ActivityManager.RunningTaskInfo> runningTaskInfos = manager.getRunningTasks(1) ;
+//        if(runningTaskInfos != null)
+//            return (runningTaskInfos.get(0).topActivity).toString() ;
+//        else
+//            return null ;
+       return packageName;
+    }
+    public static void KillApp(Context context,String packageName){
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//        activityManager.restartPackage(packageName);
+        activityManager.killBackgroundProcesses(packageName);
+    }
 }

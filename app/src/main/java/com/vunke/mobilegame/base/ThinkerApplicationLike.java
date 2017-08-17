@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 
+import com.lzy.okgo.OkGo;
 import com.tencent.tinker.anno.DefaultLifeCycle;
 import com.tencent.tinker.lib.listener.DefaultPatchListener;
 import com.tencent.tinker.lib.patch.UpgradePatch;
@@ -16,7 +17,10 @@ import com.tencent.tinker.lib.tinker.Tinker;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import com.tencent.tinker.loader.app.DefaultApplicationLike;
 import com.tencent.tinker.loader.shareutil.ShareConstants;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.PushAgent;
 import com.vunke.mobilegame.service.ThinkerService;
+import com.vunke.mobilegame.utils.WorkLog;
 
 /**
  * Created by zhuxi on 2017/3/8.
@@ -34,7 +38,37 @@ import com.vunke.mobilegame.service.ThinkerService;
 public class ThinkerApplicationLike extends DefaultApplicationLike {
     public ThinkerApplicationLike(Application application, int tinkerFlags, boolean tinkerLoadVerifyFlag, long applicationStartElapsedTime, long applicationStartMillisTime, Intent tinkerResultIntent) {
         super(application, tinkerFlags, tinkerLoadVerifyFlag, applicationStartElapsedTime, applicationStartMillisTime, tinkerResultIntent);
+
     }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initOnCreate();
+    }
+
+    public void initOnCreate() {
+        OkGo.init(getApplication());
+        //友盟推送
+        PushAgent mPushAgent = PushAgent.getInstance(getApplication());
+        //注册推送服务，每次调用register方法都会回调该接口
+        mPushAgent.register(new IUmengRegisterCallback() {
+
+            @Override
+            public void onSuccess(String deviceToken) {
+                //注册成功会返回device token
+                WorkLog.i("友盟推送", "onSuccess: deviceToken:"+deviceToken);
+            }
+
+            @Override
+            public void onFailure(String s, String s1) {
+                WorkLog.i("友盟推送", "onFailure: s:"+s+"\n s1:"+s1);
+            }
+        });
+        mPushAgent.setDebugMode(false);
+    }
+
+
     /**
      * 这个方法直接复制
      * 记得先写好Serivce  AndroidManifest.xml 一定要注册Serivce
@@ -51,7 +85,7 @@ public class ThinkerApplicationLike extends DefaultApplicationLike {
         TinkerInstaller.install(this,new DefaultLoadReporter(getApplication())
                 ,new DefaultPatchReporter(getApplication()),new DefaultPatchListener(getApplication()),ThinkerService.class,new UpgradePatch());
         Tinker tinker = Tinker.with(getApplication());
-
+        WorkLog.e("Thinker", "onBaseContextAttached: "+"loadPatch");
     }
 
     /**

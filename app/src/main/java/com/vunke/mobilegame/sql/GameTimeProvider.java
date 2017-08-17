@@ -9,14 +9,14 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 /**
- * Created by zhuxi on 2017/3/9.
+ * Created by zhuxi on 2017/7/13.
  */
-public class GamesProvide extends ContentProvider{
-    private final static String AUTHORITH = "com.vunke.mobilegame.provider.gameinfo";
-    private final static String PATH = "/game_info";
-    private final static String PATHS = "/game_info/#";
+public class GameTimeProvider extends ContentProvider {
+    private final static String AUTHORITH = "com.vunke.mobilegame.provider.gametime";
+    private final static String PATH = "/gametime";
+    private final static String PATHS = "/gametime/#";
 
-    private String TABLE_NAME = "moblie_game";
+    private String TABLE_NAME = "gametime";
     private final static UriMatcher mUriMatcher = new UriMatcher(
             UriMatcher.NO_MATCH);
     private static final int CODE_DIR = 1;
@@ -25,13 +25,13 @@ public class GamesProvide extends ContentProvider{
         mUriMatcher.addURI(AUTHORITH, PATH, CODE_DIR);
         mUriMatcher.addURI(AUTHORITH, PATHS, CODE_ITEM);
     }
-    private GamesSQLite dbHelper;
+    private GameTimeSQLite dbHelper;
     private SQLiteDatabase db;
 
-    private static final String CREATE_TIME = "create_time";
+    private static final String UPDATE_TIME = "update_time";
     @Override
     public boolean onCreate() {
-        dbHelper = new GamesSQLite(getContext());
+        dbHelper = new GameTimeSQLite(getContext());
         return false;
     }
 
@@ -44,18 +44,17 @@ public class GamesProvide extends ContentProvider{
             case 1:
                 String sql = "";
                 if (selectionArgs != null && selectionArgs.length != 0) {
-
+                sql = "select * from gametime where "+UPDATE_TIME+" = '" +selectionArgs[0]+"'" ;
                 }else{
-                    sql = "select * from " + TABLE_NAME;
+                sql = "select * from " + TABLE_NAME;
                 }
-                sql = sql + " order by "+CREATE_TIME+" desc";
                 cursor = db.rawQuery(sql, null);
                 break;
 
             default:
                 break;
         }
-            return cursor;
+        return cursor;
     }
 
     @Nullable
@@ -107,6 +106,19 @@ public class GamesProvide extends ContentProvider{
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int number = 0;
+        db = dbHelper.getWritableDatabase();
+//        switch (mUriMatcher.match(uri)) {
+//            case 1:
+        number = db.update(TABLE_NAME, values, selection, selectionArgs);
+//                break;
+//            case 2:
+//                long id = ContentUris.parseId(uri);
+//                selection = (selection != null || "".equals(selection.trim()) ? USER_ID
+//                        + "=" + id
+//                        : selection + "and" + USER_ID + "=" + id);
+//                number = db.update(TABLE_NAME, values, selection, selectionArgs);
+//        }
+        return number;
     }
 }

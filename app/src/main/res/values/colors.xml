@@ -4,7 +4,35 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="color_text1_white">#B3FEFEFE</color>
+    <color name="color_black25">#25000000</color>
+    <color name="color_black40">#40000000</color>
+    <color name="color_black70">#70000000</color>
+    <color name="color_black99">#99000000</color>
     <color name="color_background_blue">#071b4c</color>
     <color name="color_background_blue2">#1e5fff</color>
     <color name="color_background_blue3">#163c9a</color>
+    <color name="color_black">#000000</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="color_white20">#20FFFFFF</color>
+    <color name="color_white40">#40FFFFFF</color>
+    <color name="color_white60">#60FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="color_orange1">#E86711</color>
+    <color name="color_grange2">#FF9019</color>
+    <color name="color_black2">#464646</color>
+    <color name="color_black3">#8D8D8D</color>
+    <color name="color_blue1">#2A4997</color>
+    <color name="color_blue2">#6F98FF</color>
+    <color name="color_blue3">#C8D8EA</color>
+    <color name="color_blue4">#298BFF</color>
+    <color name="color_blue5">#7EB3F3</color>
+    <color name="color_blue6">#728CFF</color>
+    <color name="color_blue20">#20728CFF</color>
+    <color name="color_blue30">#30728CFF</color>
+    <color name="color_blue7">#6F7FC6</color>
+    <color name="color_blue9">#8299FD</color>
+    <color name="color_blue11">#4E66D3</color>
+
 </resources>

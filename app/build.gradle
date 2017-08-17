@@ -13,18 +13,20 @@ android {
 
         //重要   看不懂 反正就直接复制
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        /**
+         * buildConfig can change during patch!
+         * we can use the newly value when patch
+         */
         buildConfigField "String", "MESSAGE", "\"I am the base apk\""
-
+        /**
+         * client version would update with patch 客户端版本将用补丁更新
+         * so we can get the newly git version easily! 这样我们就可以轻松地获得新的Git版本！
+         */
         buildConfigField "String", "TINKER_ID", "\"${getTinkerIdValue()}\""
         buildConfigField "String", "PLATFORM", "\"all\""
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+
+
     signingConfigs {//签名设置  这个需要你自己写好签名
         release {
             try {
@@ -44,48 +46,74 @@ android {
             keyPassword "123456"
         }
     }
+    buildTypes {
+        release {
+            minifyEnabled false  //混淆
+            shrinkResources false//删除没有用到的资源
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+    }
+    sourceSets{
+        main{
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+repositories {
+    maven { url 'https://dl.bintray.com/tinker/maven'}
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
-
     //Tinker 热点修复库
     compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
     provided("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
-    compile "com.android.support:multidex:1.0.1"
+    compile 'com.android.support:multidex:1.0.1'
     //OkhttpUtils
-    compile 'com.lzy.net:okgo:+'
+    compile 'com.lzy.net:okgo:2.1.4'
+    //可以单独使用，不需要依赖下方的扩展包
     //OKhttp rx
-    compile 'com.lzy.net:okrx:+'
+    compile 'com.lzy.net:okrx:0.1.2'
+    //RxJava扩展支持，根据需要添加
     //OkhttpServer
-    compile 'com.lzy.net:okserver:+'
+    compile 'com.lzy.net:okserver:1.1.3'
+    //下载管理和上传管理扩展，根据需要添加
     //RX JAVA
     compile 'io.reactivex:rxjava:+'
     // RX Android
     compile 'io.reactivex:rxandroid:+'
     // Retrofit2
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+//    compile 'com.squareup.retrofit2:retrofit:2.2.0'
     //引入 gosn 支持
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     //picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
     // gson
     compile 'com.google.code.gson:gson:2.8.0'
+    compile project(':Pushlib')
 }
+def javaVersion = JavaVersion.VERSION_1_7
 def bakPath = file("${buildDir}/bakApk/")
+
 ext {// 重要   涉及到你 的基础安装包的位置 然后才能生成补丁
     //for some reason, you may want to ignore tinkerBuild, such as instant run debug build?
     tinkerEnabled = true
     //for normal build
     //old apk file to build patch apk
-    tinkerOldApkPath = "${bakPath}/"//生成基础Apk安装包路径
+    tinkerOldApkPath = "${bakPath}/app-release-0817-16-19-26.apk"//生成基础Apk安装包路径
     //proguard mapping file to build patch apk   app-release-0117-13-52-00-mapping.txt
     tinkerApplyMappingPath = "${bakPath}/"
     //resource R.txt to build patch apk, must input if there is resource changed
-    tinkerApplyResourcePath = "${bakPath}/"//生成基础APK的R文件
+    tinkerApplyResourcePath = "${bakPath}/app-release-0817-16-19-26-R.txt"//生成基础APK的R文件
     //only use for build all flavor, if not, just ignore this field
     tinkerBuildFlavorDirectory = "${bakPath}/"// 渠道打包
 }
@@ -137,6 +165,7 @@ if (buildWithTinker()) {
          * 从build / bakApk添加apk
          */
         oldApk = getOldApkPath()
+
         /**
          * 可选，默认'false'
          * 有些情况下我们可能会收到一些警告
@@ -170,6 +199,7 @@ if (buildWithTinker()) {
          * 警告，applyMapping会影响正常的android build！
          */
         buildConfig {
+
             /**
              * 可选，默认为'null'
              * 如果我们使用tinkerPatch构建补丁apk，你最好应用旧的
@@ -177,6 +207,7 @@ if (buildWithTinker()) {
              * 警告：你必须小心，它会影响正常的组装构建！
              */
             applyMapping = getApplyMappingPath()
+
             /**
              * 可选，默认为'null'
              * 很高兴保持资源ID从R.txt文件，以减少java更改
@@ -200,6 +231,7 @@ if (buildWithTinker()) {
         }
 
         dex {
+
             /**
              * 可选，默认'jar'
              * 只能是'raw'或'jar'。对于原始，我们将保持其原始格式
@@ -216,6 +248,7 @@ if (buildWithTinker()) {
              */
             pattern = ["classes*.dex",
                        "assets/secondary-dex-?.jar"]
+
             /**
              * 必需，默认'[]'
              * 警告，这是非常非常重要的，加载类不能随补丁改变。
@@ -232,6 +265,7 @@ if (buildWithTinker()) {
         }
 
         lib {
+
             /**
              可选，默认'[]'
              apk中的图书馆应该处理tinkerPatch
@@ -243,6 +277,7 @@ if (buildWithTinker()) {
         }
 
         res {
+
             /**
              * 可选，默认'[]'
              * apk中的什么资源应该处理tinkerPatch
@@ -269,6 +304,7 @@ if (buildWithTinker()) {
         }
 
         packageConfig {
+
             /**
              * 可选，默认'TINKER_ID，TINKER_ID_VALUE'，'NEW_TINKER_ID，NEW_TINKER_ID_VALUE'
              * 包元文件gen。路径是修补程序文件中的assets / package_meta.txt
@@ -278,17 +314,20 @@ if (buildWithTinker()) {
              * 其他配置文件（如下面的patchMessage）不是必需的
              */
             configField("patchMessage", "tinker is sample to use")
+
             /**
              * 只是一个例子，你可以使用如sdkVersion，品牌，渠道...
              * 你可以在SamplePatchListener中解析它。
              * 然后你可以使用补丁条件！
              */
             configField("platform", "all")
+
             /**
              * 补丁版本通过packageConfig
              */
             configField("patchVersion", "1.0")
         }
+
         //或者您可以添加外部的配置文件，或从旧apk获取元值
         //project.tinkerPatch.packageConfig.configField("test1", project.tinkerPatch.packageConfig.getMetaDataFromOldApk("Test"))
         //project.tinkerPatch.packageConfig.configField("test2", "sample")
@@ -297,11 +336,13 @@ if (buildWithTinker()) {
          * 如果你不使用zipArtifact或者path，我们只是使用7za来试试
          */
         sevenZip {
+
             /**
              * 可选，默认'7za'
              * 7zip工件路径，它将使用正确的7za与您的平台
              */
             zipArtifact = "com.tencent.mm:SevenZip:1.1.10"
+
             /**
              * 可选，默认'7za'
              * 你可以自己指定7za路径，它将覆盖zipArtifact值
@@ -315,10 +356,12 @@ if (buildWithTinker()) {
         flavors.add(flavor.name)
     }
     boolean hasFlavors = flavors.size() > 0
+
     /**
      * bak apk and mapping
      */
     android.applicationVariants.all { variant ->
+
         /**
          * task type, you want to bak
          */
@@ -357,6 +400,7 @@ if (buildWithTinker()) {
         }
     }
     project.afterEvaluate {
+
         //sample use for build all flavor for one time
         if (hasFlavors) {
             task(tinkerPatchAllFlavorRelease) {

@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"></uses-permission>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name = "android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+    <uses-feature android:name="android.hardware.usb.host"></uses-feature>
     <application
         android:name=".base.ThinkerApplication"
         android:allowBackup="true"
@@ -16,24 +21,120 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:launchMode="singleTask">
+
+        </activity>
+        <activity android:name=".activity.GuideActivity"
+            >
+        </activity>
+        <activity android:name=".activity.AppSettingsActivity"
+            >
+        </activity>
+        <activity android:name=".activity.TimeSettingActivity"
+            >
+        </activity>
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.GuideActivity" />
+
         <!--Tinker service-->
         <service
             android:name=".service.ThinkerService"
             android:exported="false" />
+        <!--Tinker service-->
 
+
+        <service android:name=".service.killSelfService"
+            android:process = ":kill"
+            android:exported="false">
+        </service>
+
+        <service android:name=".service.FloatWindowsService"
+            android:exported="false">
+        </service>
+        <service android:name=".service.UpdateService"
+            android:exported="false">
+
+        </service>
+        <activity android:name=".activity.USBLinsterActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+
+        <!--游戏列表-->
         <provider
             android:authorities="com.vunke.mobilegame.provider.gameinfo"
-            android:name="com.vunke.mobilegame.sql.GamesProvide"
+            android:name=".sql.GamesProvider"
             android:exported="false">
         </provider>
+
+        <!--投币费率-->
+        <provider
+            android:authorities="com.vunke.mobilegame.provider.gametime"
+            android:name=".sql.GameTimeProvider"
+            android:exported="false">
+        </provider>
+        <!--登录 -->
+        <provider
+            android:authorities="com.vunke.mobilegame.provider.login"
+            android:name=".sql.LoginProvider"
+            android:exported="false">
+        </provider>
+        <!--订单-->
+        <provider
+            android:authorities="com.vunke.mobilegame.provider.order_info"
+            android:name=".sql.OrderInfoProvider"
+            android:exported="false">
+        </provider>
+
+
+
+        <receiver android:name=".receiver.NetWorkConnectChange"
+            >
+                <intent-filter>
+                    <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                </intent-filter>
+        </receiver>
+        <!--应用安装和卸载监听-->
+        <receiver android:name=".receiver.AppReceiver" >
+            <intent-filter>
+                <!-- 一个新应用包已经安装在设备上，数据包括包名（监听所在的app，新安装时，不能接收到这个广播） -->
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <!-- 一个新版本的应用安装到设备，替换之前已经存在的版本  替换时会先收到卸载的再收到替换的， 替换自身也能收到-->
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <!-- 一个已存在的应用程序包已经从设备上移除，包括包名（卸载监听所在的app，则无法接收到） -->
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <!--友盟推送-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5983d102f43e481cc10019e0">
+        </meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="e3a56f65ee35325f49e41faa0a69c0c7">
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="" >
+        </meta-data>
+        <!--友盟推送-->
+
+
     </application>
 
 </manifest>
